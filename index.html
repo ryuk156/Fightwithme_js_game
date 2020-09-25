@@ -1,29 +1,59 @@
-<link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
-<style>
-    body {
-        margin: 0px;
-        background:black
-    }
-</style>
-<div class="fixed text-white  ml-2 mt-1 select-none"><span>Score: </span> <span id="score">0</span></div>
+<html>
+
+<head>
+    <title>FightWithMe</title>
+    <style>
+        body {
+            margin: 0px;
+            background: black
+        }
+    </style>
+    <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
+
+</head>
+
+</html>
+
+<body>
 
 
-<div class="fixed inset-0 flex items-center justify-center" id="modal" >
-    <div class="bg-white max-w-md w-full p-6  text-center">
-        <h1 class="text-4xl font-bold leading-none " id="modalscore" >
-            0
-        </h1>
-        <p class="text-sm text-gray-700 mb-4" >Points</p>
-        <div>  <button class="bg-blue-500 text-white w-full py-3  rounded-full text-sm" id="startGamebtn">
-            Start Game
-        </button></div>
-      
+    <audio id="shootAudio">
+    
+        <source src="sounds/shoot.mp3" type="audio/mpeg">
+       
+      </audio>
+
+      <audio id="blastAudio">
+    
+        <source src="sounds/blast.mp3" type="audio/mpeg">
+       
+      </audio>
+      <audio id="dieAudio">
+    
+        <source src="sounds/die.mp3" type="audio/mpeg">
+       
+      </audio>
+    <div class="fixed text-white  ml-2 mt-1 select-none"><span>Score: </span> <span id="score">0</span></div>
+
+
+    <div class="fixed inset-0 flex items-center justify-center" id="modal">
+        <div class="bg-white max-w-md w-full p-6  text-center">
+            <h1 class="text-4xl font-bold leading-none " id="modalscore">
+                0
+            </h1>
+            <p class="text-sm text-gray-700 mb-4">Points</p>
+            <div> <button class="bg-blue-500 text-white w-full py-3  rounded-full text-sm" id="startGamebtn">
+                    Start Game
+                </button></div>
+
+        </div>
+
     </div>
 
-</div>
 
+    <canvas></canvas>
 
-<canvas></canvas>
+</body>
 
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.5.1/gsap.min.js"

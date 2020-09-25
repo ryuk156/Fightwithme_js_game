@@ -6,11 +6,11 @@ canvas.height = window.innerHeight
 
 const c = canvas.getContext("2d")
 
-const  score =document.getElementById('score')
+const score = document.getElementById('score')
 
-const startgame=document.getElementById('startGamebtn')
-const modal=document.getElementById('modal')
-const  Modalscore =document.getElementById('modalscore')
+const startgame = document.getElementById('startGamebtn')
+const modal = document.getElementById('modal')
+const Modalscore = document.getElementById('modalscore')
 
 class Player {
   constructor(x, y, radius, color) {
@@ -89,7 +89,7 @@ class Projectile {
 
 }
 
-const friction=0.99
+const friction = 0.99
 class Particle {
   constructor(x, y, radius, color, velocity) {
     this.x = x
@@ -114,8 +114,8 @@ class Particle {
 
   update() {
     this.draw()
-    this.velocity.x*=friction
-    this.velocity.y*=friction
+    this.velocity.x *= friction
+    this.velocity.y *= friction
     this.x = this.x + this.velocity.x
     this.y = this.y + this.velocity.y
     this.alpha -= 0.01
@@ -136,14 +136,14 @@ let projectiles = []
 let enemies = []
 let particles = []
 
-function init(){
-   player = new Player(x, y, 15, "white")
- projectiles = []
- enemies = []
- particles = []
- Score=0
- score.innerHTML=Score
- Modalscore.innerHTML=Score
+function init() {
+  player = new Player(x, y, 15, "white")
+  projectiles = []
+  enemies = []
+  particles = []
+  Score = 0
+  score.innerHTML = Score
+  Modalscore.innerHTML = Score
 
 }
 
@@ -182,8 +182,23 @@ function clear() {
   c.fillRect(0, 0, canvas.width, canvas.height)
 }
 
+
+var shootsound = document.getElementById("shootAudio"); 
+var blastsound = document.getElementById("blastAudio"); 
+var diesound = document.getElementById("dieAudio");
+function playshootAudio() { 
+  shootsound.play(); 
+} 
+function playblastAudio() { 
+  blastsound.play(); 
+} 
+
+function playdieAudio() { 
+  diesound.play(); 
+} 
+
 addEventListener('click', (event) => {
-  
+
 
   const angle = Math.atan2(event.clientY - canvas.height / 2, event.clientX - canvas.width / 2)
   const velocity = {
@@ -192,16 +207,21 @@ addEventListener('click', (event) => {
   }
   const firecolor = "green"
   projectiles.push(new Projectile(canvas.width / 2, canvas.height / 2, 5, firecolor, velocity))
-
+ playshootAudio()
 
 })
 
 let animateId
-let  Score=0
+let Score = 0
 function animate() {
   animateId = requestAnimationFrame(animate)
   clear()
-  player.draw()
+  try {
+    player.draw()
+  } catch (error) {
+    
+  }
+ 
 
   projectiles.forEach((Pro, proIndex) => {
     Pro.update()
@@ -213,12 +233,25 @@ function animate() {
   enemies.forEach((enemy, index) => {
     enemy.update()
 
+    try {
+      
+    
     const dist = Math.hypot(player.x - enemy.x, player.y - enemy.y)
     if (dist - enemy.radius - player.radius < 1) {
-      cancelAnimationFrame(animateId)
-      modal.style.display="flex"
-      Modalscore.innerHTML=Score
-    
+      
+      
+      player=null
+     
+      playdieAudio()
+      setTimeout(()=>{
+
+        cancelAnimationFrame(animateId)
+        modal.style.display = "flex"
+        Modalscore.innerHTML = Score
+        player = new Player(x, y, 15, "white")
+      },800)
+     
+
     }
 
     particles.forEach((particle, index) => {
@@ -228,18 +261,25 @@ function animate() {
         particle.update()
       }
 
+      
+
     })
+
+  }
+  catch (error) {
+    
+  }
     projectiles.forEach((pro, proIndex) => {
       const dist = Math.hypot(pro.x - enemy.x, pro.y - enemy.y)
       if (dist - enemy.radius - pro.radius < 1) {
-        
+
 
         for (let i = 0; i < enemy.radius * 2; i++) {
           particles.push(new Particle(pro.x, pro.y, Math.random() * 3, enemy.color, { x: (Math.random() - 0.5) * (Math.random() * 6), y: (Math.random() - 0.5) * (Math.random() * 6) }))
         }
         if (enemy.radius - 10 > 5) {
-          Score+=100
-        score.innerHTML=Score
+          Score += 100
+          score.innerHTML = Score
           gsap.to(enemy, {
             radius: enemy.radius - 10
           })
@@ -249,10 +289,11 @@ function animate() {
           }, 0)
         } else {
           setTimeout(() => {
-            Score+=250
-        score.innerHTML=Score
+            Score += 250
+            score.innerHTML = Score
             enemies.splice(index, 1)
             projectiles.splice(proIndex, 1)
+            playblastAudio()
           }, 0)
         }
 
@@ -262,9 +303,9 @@ function animate() {
   })
 }
 
-startgame.addEventListener('click',()=>{
+startgame.addEventListener('click', () => {
   init()
   animate()
   spawnEnemy()
-  modal.style.display="none"
+  modal.style.display = "none"
 })
